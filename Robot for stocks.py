@@ -1,8 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
 
 #get imformation from iefinance
 from iexfinance import get_available_symbols
@@ -28,20 +26,6 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import re
 
-
-# In[19]:
-
-
-
-
-
-# In[10]:
-
-
-
-
-
-# In[49]:
 
 
 #Creat a function to wipe some useless letters in a stock's name.
