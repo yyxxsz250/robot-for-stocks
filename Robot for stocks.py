@@ -68,9 +68,7 @@ def find_name(message):
             if a!=None:
                 return a,b
     return None,1
-#        DOC=nlp(token)
-#        for TOKEN in DOC:
-#            print(TOKEN.tag_)
+
 
 a,b=find_name( 'I')
 print(a,b)
@@ -87,7 +85,6 @@ def find_info(message):
     return info
 
 
-# In[4]:
 
 
 #define three states in conversation
@@ -116,15 +113,6 @@ response_infos=[
     "The {1} of {0} is {2},and the {3} is {4}.",
     "The {1} of {0} is {2}, the {5} is {6} and the {3} is {4}."
 ]
-
-
-# In[ ]:
-
-
-
-
-
-# In[21]:
 
 
 #main function to response
@@ -256,10 +244,6 @@ def respond(policy,state, name, message):
         return new_state, name ,response
             
                             
-                
-
-
-# In[22]:
 
 
 #test the program
@@ -289,39 +273,12 @@ def shiyan(policy,messages):
 shiyan(policy,messages)
 
 
-# In[ ]:
-
-
-
-
-
-# In[40]:
-
 
 #Connect the robot to Weixin
 from wxpy import *
 bot=Bot()
-
-
-# In[43]:
-
-
 user = bot.friends().search('天')[0]
 print(user)
-
-
-# In[11]:
-
-
-
-
-
-# In[50]:
-
-
-INIT=0
-COMFIRM_NAME=1
-ASKING_INFO=2
 state=INIT
 name=None
 @bot.register(user)
@@ -332,28 +289,3 @@ def reply_my_friend(msg):
     state=new_state
     name=new_infos
     return response
-
-
-# In[46]:
-
-
-
-
-
-# In[134]:
-
-
-
-
-
-# In[168]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
