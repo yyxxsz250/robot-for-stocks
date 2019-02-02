@@ -3,6 +3,7 @@
 
 
 #get imformation from iefinance
+#The information involving the names and symbols of all the stocks and their Price, Share and Volume.
 from iexfinance import get_available_symbols
 from iexfinance import Stock
 iu=get_available_symbols(output_format='dict')
@@ -10,9 +11,9 @@ from iexfinance import get_market_tops
 from iexfinance import get_stats_intraday
 shizhi=get_market_tops()
 
-#make the robot learn to interpret
-import spacy
-nlp=spacy.load("en_core_web_md")
+
+
+#Creat a function to interpret the intention of a sentence
 from rasa_nlu.training_data import load_data
 from rasa_nlu.config import RasaNLUModelConfig
 from rasa_nlu.model import Trainer
@@ -21,14 +22,14 @@ trainer = Trainer(config.load("config_spacy.yml"))
 data=load_data('studing.json')
 interpreter = trainer.train(data)
 
-#get necessary tools
+#get necessary modules
 from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 import re
+import spacy
+nlp=spacy.load("en_core_web_md")
 
-
-
-#Creat a function to wipe some useless letters in a stock's name.
+#Creat a function to wipe some useless suffix in a stock's name.
 gongsihouzhui=re.compile(r" (inc|corporation|company|fund)")
 def quhouzhui(name):
     nam=str.lower(name)
@@ -38,6 +39,10 @@ def quhouzhui(name):
     return nam
 
 #creat a function to compare the word with the stocks' names.
+#Input is a string, output are number Fa and a string name.
+#If Fa=0, means the string is the stock
+#If Fa=1 and name is not None, means the string could be a stock, but not sure.
+#If Fa=1 and name is None, means the string isn't a stock.
 def pipei_name(name):
     Fa=0
     nam=None
@@ -56,6 +61,10 @@ def pipei_name(name):
     return nam,1
 
 #creat a function to get a name from the message
+#the input is a string, output are number Fa and a string name.
+#If Fa=0, means there are a stock in this string
+#If Fa=1 and name is not None, there could be a stock in the input, but not sure.
+#If Fa=1 and name is None, means there is no stock in the input.
 def find_name(message):
     a,b=pipei_name(message)
     if a!=None:
@@ -74,6 +83,7 @@ a,b=find_name( 'I')
 print(a,b)
 
 #creat a function to learn what information about the stock the user want to know.
+#the input is a string, the function try to find entitles including price, volume, and share in the string, and output a set storaging the entitles found.
 def find_info(message):
     info=[]
     if re.search(re.compile(r"(volume|bidsize)"),message):
@@ -93,6 +103,7 @@ COMFIRM_NAME=1
 ASKING_INFO=2
 
 #define some dicts to use for creating response
+#the dict is used when the response and the new state is only based on the intention and the State, don't need other information or logical Calculation。
 policy = {
     (INIT,"greet"): (INIT, "Hello!How can I help you?"),
     (INIT,"chatting"): (INIT, "oh, that's so funny.Would you ask me something about the market?"),    
@@ -106,6 +117,8 @@ policy = {
     (ASKING_INFO,"chatting"):(ASKING_INFO,"oh, that's so funny. So would yoou like to continue our searching on that stock? I was just enjoying our conversation"),
      (ASKING_INFO,"greet"): (ASKING_INFO, "Hello!How can I help you?"),
 }
+
+
 
 response_infos=[
     "sorry, I can't find infomations you need on internet now, what an unlucky matter",
